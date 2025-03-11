@@ -1,11 +1,12 @@
 namespace PdPools;
 
+using System;
 using System.Collections.Generic;
 
 /// <summary>
 ///   <para>A Collection such as List, HashSet, Dictionary etc can be pooled and reused by using a CollectionPool.</para>
 /// </summary>
-public class CollectionPool<TCollection, TItem> where TCollection : class, ICollection<TItem>, new()
+public class CollectionPool<TCollection, TItem> : IDisposable where TCollection : class, ICollection<TItem>, new()
 {
   internal static readonly ObjectPool<TCollection> _pool = new(() => [], actionOnRelease: l => l.Clear());
 
@@ -20,4 +21,6 @@ public class CollectionPool<TCollection, TItem> where TCollection : class, IColl
   {
     _pool.Release(toRelease);
   }
+
+  public void Dispose() => _pool.Clear();
 }
